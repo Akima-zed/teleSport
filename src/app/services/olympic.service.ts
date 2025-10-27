@@ -11,7 +11,6 @@ export class OlympicService {
 
   constructor(private http: HttpClient) {}
 
-
   getCountries(): Observable<Country[]> {
     return this.http.get<Country[]>(this.olympicUrl);
   }
@@ -22,12 +21,11 @@ export class OlympicService {
     );
   }
 
-
   getTotalMedals(participations: Participation[]): number {
-    return participations.reduce((total, participation) => total + participation.medalsCount, 0);
-   }
+    return participations.reduce((total, p) => total + p.medalsCount, 0);
+  }
 
   getTotalAthletes(participations: Participation[]): number {
-    return participations.reduce((total, participation) => total + participation.athleteCount, 0);
+    return participations.reduce((total, p) => total + p.athleteCount, 0);
   }
 }

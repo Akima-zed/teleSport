@@ -1,9 +1,10 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import Chart from 'chart.js/auto';
 import { OlympicService } from '../../services/olympic.service';
 import { Country, Participation } from '../../models';
+
 
 
 @Component({
@@ -11,7 +12,7 @@ import { Country, Participation } from '../../models';
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.scss']
 })
-export class CountryComponent implements OnInit {
+export class CountryComponent implements OnInit, OnDestroy {
 
   //private olympicUrl = './assets/mock/olympic.json';  => geré par le service
   public lineChart!: Chart<"line", string[], number>; // instancie chart.js
@@ -42,25 +43,25 @@ export class CountryComponent implements OnInit {
   }
 
    // récupère les donnes pays via le service
-    private loadCountryData(countryName: string) {
-      this.olympicService.getCountries().subscribe({  // demande les données au service
-        next: (selectedCountry: Country | undefined) => {  //si ok on récupere
-          if (!selectedCountry) return; // sinon on arret
+    private loadCountryData(name: string) {
+      this.olympicService.getCountryByName(name).subscribe({  // demande les données au service
+        (selectedCountry) => {
+          if (!selectedCountry) return;
 
           this.titlePage = selectedCountry.country;
 
           // calcul via le service
           this.totalEntries = selectedCountry.participations.length;
-          this.totalMedals = this.olympicService.calculateTotalMedals(selectedCountry.participations);
-          this.totalAthletes = this.olympicService.calculateTotalAthletes(selectedCountry.participations);
+          this.totalMedals = this.olympicService.getTotalMedals(selectedCountry.participations);
+          this.totalAthletes = this.olympicService.getTotalAthletes(selectedCountry.participations);
 
           // prépare tableau chart
-          const years = selectedCountry.participations.map((p: Participation) => p.year);
-          const medals = selectedCountry.participations.map((p: Participation) => p.medalsCount);
+          const years = selectedCountry.participations.map(p => p.year.toString());
+                  const medals = selectedCountry.participations.map(p => p.medalsCount);
 
           this.buildChart(years, medals);
         },
-        error: (err: any) => {
+        (err: any) => {
           this.error = err.message;
         }
       });
@@ -72,7 +73,7 @@ export class CountryComponent implements OnInit {
           // Si le chart existe déjà, on met à jour les données
           this.lineChart.data.labels = years;
           this.lineChart.data.datasets[0].data = medals;
-          this.lineChart.update(); // 🔄 Mise à jour du chart
+          this.lineChart.update();
         } else {
           // Sinon, on crée le chart pour la première fois
           this.lineChart = new Chart("countryChart", {
