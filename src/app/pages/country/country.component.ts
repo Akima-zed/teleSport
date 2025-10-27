@@ -1,11 +1,12 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import Chart from 'chart.js/auto';
 import { OlympicService } from '../../services/olympic.service';
-import { Country, Participation } from '../../models';
-
-
+import { Participation } from '../../models/participation';
+import { Country } from '../../models/country';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-country',
@@ -14,91 +15,86 @@ import { Country, Participation } from '../../models';
 })
 export class CountryComponent implements OnInit, OnDestroy {
 
-  //private olympicUrl = './assets/mock/olympic.json';  => geré par le service
-  public lineChart!: Chart<"line", string[], number>; // instancie chart.js
+  public lineChart!: Chart<"line", number[], number>; // Chart : labels = number[]
   public titlePage: string = '';
   public totalEntries: number = 0;
   public totalMedals: number = 0;
   public totalAthletes: number = 0;
   public error!: string;
-  // Stocke le nom du pays depuis la route pour réutilisation
   private countryName: string | null = null;
 
+  private destroy$ = new Subject<void>(); // Pour désinscrire proprement les observables
 
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              private olympicService: OlympicService ) // inject le service
-  {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private olympicService: OlympicService
+  ) {}
 
   ngOnInit() {
-    // on écoute le changement pour récupérer les données
-    this.route.paramMap.subscribe((param: ParamMap) => {
-        // on stock le pays pour le réutiliser
+    // Écoute les changements de route pour récupérer le nom du pays
+    this.route.paramMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (param: ParamMap) => {
           this.countryName = param.get('countryName');
-          // condition :si existe on appel loadCountryData()
           if (this.countryName) {
             this.loadCountryData(this.countryName);
           }
+        },
+        error: (err: any) => {
+          this.error = err.message;
+        }
       });
   }
 
-   // récupère les donnes pays via le service
-    private loadCountryData(name: string) {
-      this.olympicService.getCountryByName(name).subscribe({  // demande les données au service
-        (selectedCountry) => {
+  private loadCountryData(name: string) {
+    this.olympicService.getCountryByName(name)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (selectedCountry: Country | undefined) => {
           if (!selectedCountry) return;
 
           this.titlePage = selectedCountry.country;
-
-          // calcul via le service
           this.totalEntries = selectedCountry.participations.length;
           this.totalMedals = this.olympicService.getTotalMedals(selectedCountry.participations);
           this.totalAthletes = this.olympicService.getTotalAthletes(selectedCountry.participations);
 
-          // prépare tableau chart
-          const years = selectedCountry.participations.map(p => p.year.toString());
-                  const medals = selectedCountry.participations.map(p => p.medalsCount);
-
+          const years = selectedCountry.participations.map(p => p.year); // number[]
+          const medals = selectedCountry.participations.map(p => p.medalsCount); // number[]
           this.buildChart(years, medals);
         },
-        (err: any) => {
+        error: (err: any) => {
           this.error = err.message;
         }
       });
-    }
+  }
 
-    // Construction du chart (reste ici, peut être factorisé plus tard)
-     private buildChart(years: number[], medals: number[]) {
-        if (this.lineChart) {
-          // Si le chart existe déjà, on met à jour les données
-          this.lineChart.data.labels = years;
-          this.lineChart.data.datasets[0].data = medals;
-          this.lineChart.update();
-        } else {
-          // Sinon, on crée le chart pour la première fois
-          this.lineChart = new Chart("countryChart", {
-            type: 'line',
-            data: {
-              labels: years,
-              datasets: [
-                {
-                  label: "Medals",
-                  data: medals,
-                  backgroundColor: '#0b868f'
-                },
-              ]
+  private buildChart(years: number[], medals: number[]) {
+    if (this.lineChart) {
+      this.lineChart.data.labels = years;
+      this.lineChart.data.datasets[0].data = medals;
+      this.lineChart.update();
+    } else {
+      this.lineChart = new Chart("countryChart", {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: "Medals",
+              data: medals,
+              backgroundColor: '#0b868f'
             },
-            options: {
-              aspectRatio: 2.5
-            }
-          });
-        }
-      }
-
-      // on se désinscrit de l'observable
-      ngOnDestroy() {
-        if (this.routeSub) {
-          this.routeSub.unsubscribe();
-        }
-      }
+          ]
+        },
+        options: { aspectRatio: 2.5 }
+      });
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();    // déclenche la désinscription
+    this.destroy$.complete();
+  }
+}

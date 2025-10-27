@@ -1,4 +1,4 @@
-import {participations} from './participations';
+import {Participation} from './participation';
 
 export interface Country {
   country: string;                 // Nom du pays

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Country, Participation } from './models/country.model';
+import { Participation } from '../models/participation';
+import { Country} from '../models/country';
 
 @Injectable({
   providedIn: 'root'
