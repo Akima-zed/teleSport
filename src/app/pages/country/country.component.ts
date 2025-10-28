@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
 import Chart from 'chart.js/auto';
 import { OlympicService } from '../../services/olympic.service';
@@ -12,24 +12,24 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./country.component.scss']
 })
 export class CountryComponent implements OnInit, OnDestroy {
-
   /** Données pour le header réutilisable */
   headerTitle = '';
   headerIndicators: { label: string; value: number }[] = [];
 
-  /** Instance du graphique Chart.js */
-  public lineChart!: Chart<'line', number[], number>;
-
   /** Totaux et données */
-  public countryName = '';
-  public totalParticipations = 0;
-  public totalMedals = 0;
-  public totalAthletes = 0;
+  countryName = '';
+  totalParticipations = 0;
+  totalMedals = 0;
+  totalAthletes = 0;
 
-  /** Message d’erreur */
-  public errorMessage = '';
+  /** Graphique Chart.js */
+  lineChart!: Chart<'line', number[], number>;
 
-  /** Observable de destruction pour éviter les fuites mémoire */
+  /** Loading et erreurs */
+  isLoading = true;
+  errorMessage = '';
+
+  /** Observable de destruction */
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -47,17 +47,20 @@ export class CountryComponent implements OnInit, OnDestroy {
           this.loadCountryData(countryParam);
         } else {
           this.errorMessage = 'Aucun pays sélectionné.';
+          this.isLoading = false;
         }
       });
   }
 
   /** Charge les données du pays depuis le service */
   private loadCountryData(name: string): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
     this.olympicService.getCountryByName(name)
       .pipe(
         takeUntil(this.destroy$),
         catchError((err: unknown) => {
-          // Gestion d’erreur strict
           if (err instanceof HttpErrorResponse) {
             this.errorMessage = err.message || `Erreur HTTP ${err.status}`;
           } else if (err instanceof Error) {
@@ -65,10 +68,12 @@ export class CountryComponent implements OnInit, OnDestroy {
           } else {
             this.errorMessage = 'Erreur inconnue';
           }
-          return of(undefined); // Retourne undefined pour continuer le flux
+          this.isLoading = false;
+          return of(undefined);
         })
       )
       .subscribe(country => {
+        this.isLoading = false;
         if (!country) return;
 
         // Affectation des données
@@ -85,9 +90,9 @@ export class CountryComponent implements OnInit, OnDestroy {
           { label: 'Athletes', value: this.totalAthletes }
         ];
 
-        // Préparer les données du graphique
+        // Données pour le graphique
         const years = country.participations.map(p => p.year);
-        const medals = country.participations.map(p => this.olympicService.getTotalMedals([p]));
+        const medals = country.participations.map(p => p.medalsCount);
 
         this.buildChart(years, medals);
       });
@@ -129,14 +134,14 @@ export class CountryComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** Retour au dashboard */
+  goBack(): void {
+    this.router.navigate(['/']);
+  }
+
   /** Nettoyage des abonnements */
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  /** Retour au dashboard */
-  public goBack(): void {
-    this.router.navigate(['/']);
   }
 }
