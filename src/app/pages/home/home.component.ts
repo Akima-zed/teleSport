@@ -38,6 +38,8 @@ export class HomeComponent implements OnInit {
           country.participations.reduce((sum: number, p: any) => sum + p.medalsCount, 0)
         );
 
+
+
         // Construire le graphique
         this.buildPieChart(countries, medalsPerCountry);
       },

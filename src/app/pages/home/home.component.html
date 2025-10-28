@@ -1,20 +1,9 @@
-<h2>Olympic games app</h2>
-<hr/>
-<div>
-  <div>
-    <div class="center">
-      <div>{{ titlePage }}</div>
-    </div>
-    <div class="split">
-      <div>
-        <p>Number of countries</p>
-        <p>{{ totalCountries }}</p>
-      </div>
-      <div>
-        <p>Number of JOs</p>
-        <p>{{ totalJOs }}</p>
-      </div>
-    </div>
-  </div>
-  <canvas id="DashboardPieChart">{{ pieChart }}</canvas>
+
+
+<!-- Graphique -->
+<div class="chart-wrapper">
+  <canvas id="DashboardPieChart"></canvas>
 </div>
+
+<!-- Affichage erreur si nécessaire -->
+<div *ngIf="error" class="error-message">{{ error }}</div>
