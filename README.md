@@ -33,18 +33,32 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
 
 ## Fonctionnalités
 
-- Dashboard avec graphique camembert des médailles par pays
-- Page Country Detail avec graphique en ligne par année
-- Tri par nom ou par total de médailles
-- Header réutilisable avec KPI (Pays, Médailles, JOs)
-- Responsive : Desktop / Tablette / Mobile
-- Gestion des erreurs (message + bouton retour)
-- Chargement avec spinner ou skeleton
+Dashboard : 
+- Graphique en camembert (Chart.js) 
+- Tri par pays (ordre alphabétique ou total de médailles)
+
+Page Country Detail :
+- Graphique linéaire de l’évolution des médailles
+- KPIs : participations, médailles, athlètes
+
+Header réutilisable :
+- Présente les indicateurs clés sur chaque page
+
+Gestion des erreurs :
+- Message + redirection sécurisée en cas d’ID invalide
+
+Responsive design :
+- Desktop ≥ 1200px : 12 colonnes côte à côte
+- Tablette 768–1199px : 8 colonnes, graphes pleine largeur
+- Mobile ≤ 767px : 4 colonnes, affichage vertical
+
+Chargement :
+- Variable loading et *ngIf pour afficher un spinner ou skeleton pendant le fetch
 
 
 ## Bonnes pratiques appliquées
 
-- Typage strict (pas de any)
+- Typage strict (pas de any, utilisation d'interface)
 - Observables détruits avec takeUntil
 - Gestion des erreurs avec catchError
 - Code factorisé et lisible
