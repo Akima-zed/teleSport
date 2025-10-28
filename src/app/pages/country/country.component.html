@@ -1,6 +1,12 @@
 <!-- Header réutilisable -->
 <app-header [title]="headerTitle" [indicators]="headerIndicators"></app-header>
 
+<!-- Spinner de chargement -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner"></div>
+  <p>Chargement des données...</p>
+</div>
+
 <div class="country-page">
   <div class="header center">
     <h1>{{ countryName }}</h1>
@@ -31,8 +37,10 @@
   <div class="center">
     <a routerLink="">← Back to Dashboard</a>
   </div>
-
-  <div *ngIf="errorMessage" class="error center">
-    {{ errorMessage }}
-  </div>
 </div>
+  <!-- Affichage erreur avec bouton Réessayer -->
+  <div *ngIf="!isLoading && errorMessage" class="error center">
+    <p>❌ {{ errorMessage }}</p>
+    <button class="retry-btn" (click)="ngOnInit()">Réessayer</button>
+  </div>
+
