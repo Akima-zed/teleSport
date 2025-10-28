@@ -12,6 +12,10 @@ import { Country } from '../../models/country';
 })
 export class CountryComponent implements OnInit, OnDestroy {
 
+  /** Données pour le header réutilisable */
+  headerTitle: string = '';
+  headerIndicators: { label: string; value: number }[] = [];
+
   /** Instance du graphique Chart.js */
   public lineChart!: Chart<"line", number[], number>;
 
@@ -28,6 +32,8 @@ export class CountryComponent implements OnInit, OnDestroy {
 
   /** Observable de destruction pour éviter les fuites mémoire */
   private destroy$ = new Subject<void>();
+
+
 
   constructor(
     private route: ActivatedRoute,
@@ -69,6 +75,15 @@ export class CountryComponent implements OnInit, OnDestroy {
           this.totalParticipations = country.participations.length;
           this.totalMedals = this.olympicService.getTotalMedals(country.participations);
           this.totalAthletes = this.olympicService.getTotalAthletes(country.participations);
+
+
+          // Mettre à jour le header réutilisable
+          this.headerTitle = this.countryName;
+          this.headerIndicators = [
+            { label: 'Entries', value: this.totalParticipations },
+            { label: 'Medals', value: this.totalMedals },
+            { label: 'Athletes', value: this.totalAthletes }
+          ];
 
           // Données pour le graphique
           const years = country.participations.map(p => p.year);
