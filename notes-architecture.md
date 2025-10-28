@@ -43,3 +43,4 @@ Les différents dossiers
 - main.ts => Lance l’application Angular et initialise le module racine (AppModule).
 - polyfills.ts => Compatibilité navigateurs pour que Angular fonctionne sur différents navigateurs.
 - test.ts → Configuration des tests unitaires pour Karma/Jasmine global.
+
