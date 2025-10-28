@@ -1,14 +1,10 @@
-import { Component, Input } from '@angular/core';
+<div class="header-container">
+  <h1 class="header-title">{{ title }}</h1>
 
-@Component({
-selector: 'app-header',
-templateUrl: './header.component.html',
-styleUrls: ['./header.component.scss'],
-})
-export class HeaderComponent {
-/** Titre principal de la page */
-@Input() title: string = '';
-
-/** Liste des KPI à afficher : { label, value } */
-@Input() indicators: { label: string; value: number }[] = [];
-}
+  <div class="header-kpis" *ngIf="indicators.length > 0">
+    <div class="kpi" *ngFor="let kpi of indicators">
+      <span class="kpi-label">{{ kpi.label }}</span>
+      <span class="kpi-value">{{ kpi.value }}</span>
+    </div>
+  </div>
+</div>

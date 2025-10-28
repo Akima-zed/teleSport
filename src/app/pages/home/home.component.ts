@@ -1,5 +1,5 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {Component, OnInit} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Chart from 'chart.js/auto';
 
@@ -9,27 +9,31 @@ import Chart from 'chart.js/auto';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  private olympicUrl = './assets/mock/olympic.json';
-  public pieChart!: Chart<"pie", number[], string>;
-  public totalCountries: number = 0
-  public totalJOs: number = 0
-  public error!:string
-  titlePage: string = "Medals per Country";
+  titlePage = 'Médailles par pays';
 
-  constructor(private router: Router, private http:HttpClient) { }
+  /** KPI pour le HeaderComponent */
+  headerIndicators: { label: string; value: number }[] = [];
+
+  totalCountries = 0;
+  totalJOs = 0;
+
+  pieChart!: Chart<"pie", number[], string>;
+
+  private olympicUrl = './assets/mock/olympic.json';
+  public error: string = '';
+
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.http.get<any[]>(this.olympicUrl).subscribe({
-      next: (data) => {
-        //console.log('Liste des données :', data);
-
+      next: data => {
         if (!data || data.length === 0) return;
 
         // Nombre total de JOs
         const allYears = data.flatMap(country => country.participations.map((p: any) => p.year));
         this.totalJOs = new Set(allYears).size;
 
-        // Liste des pays et total de pays
+        // Liste des pays et total
         const countries = data.map(country => country.country);
         this.totalCountries = countries.length;
 
@@ -38,35 +42,39 @@ export class HomeComponent implements OnInit {
           country.participations.reduce((sum: number, p: any) => sum + p.medalsCount, 0)
         );
 
-
+        // Mettre à jour le header
+        this.headerIndicators = [
+          { label: 'Pays', value: this.totalCountries },
+          { label: 'JOs', value: this.totalJOs }
+        ];
 
         // Construire le graphique
         this.buildPieChart(countries, medalsPerCountry);
       },
-      error: (err) => {
+      error: err => {
         console.error('Erreur lors du chargement des données :', err);
         this.error = err.message;
       }
     });
   }
 
-  buildPieChart(countries: string[], sumOfAllMedalsYears: number[]) {
+  buildPieChart(countries: string[], medals: number[]) {
     const pieChart = new Chart("DashboardPieChart", {
       type: 'pie',
       data: {
         labels: countries,
         datasets: [{
-          label: 'Medals',
-          data: sumOfAllMedalsYears,
+          label: 'Médailles',
+          data: medals,
           backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
           hoverOffset: 4
-        }],
+        }]
       },
       options: {
         aspectRatio: 2.5,
         onClick: (e) => {
           if (e.native) {
-            const points = pieChart.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true)
+            const points = pieChart.getElementsAtEventForMode(e.native, 'point', { intersect: true }, true);
             if (points.length) {
               const firstPoint = points[0];
               const countryName = pieChart.data.labels ? pieChart.data.labels[firstPoint.index] : '';
@@ -79,4 +87,3 @@ export class HomeComponent implements OnInit {
     this.pieChart = pieChart;
   }
 }
-
