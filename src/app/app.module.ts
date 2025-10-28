@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { CountryComponent } from './pages/country/country.component';
-import { CountryCard } from ''
+
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, NotFoundComponent, CountryComponent],
