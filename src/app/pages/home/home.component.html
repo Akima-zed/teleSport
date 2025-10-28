@@ -1,6 +1,15 @@
 <!-- Header réutilisable -->
 <app-header [title]="titlePage" [indicators]="headerIndicators"></app-header>
 
+<!-- Sélecteur du tri -->
+<div class="sort-container">
+  <label for="sort">Trier par :</label>
+  <select id="sort" [(ngModel)]="sortBy" (change)="onSortChange()">
+    <option value="totalMedals">Total des médailles</option>
+    <option value="alphabetical">Alphabétique</option>
+  </select>
+</div>
+
 <!-- Graphique -->
 <div class="chart-wrapper">
   <canvas id="DashboardPieChart"></canvas>

@@ -1,9 +1,18 @@
 .chart-wrapper {
+  width: 100%;
   max-width: 700px;
   margin: 0 auto;
+  height: 400px;
 }
-.error-message {
-  color: red;
+
+.sort-container {
   text-align: center;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  text-align: center;
+  color: red;
+  font-weight: bold;
   margin-top: 1rem;
 }

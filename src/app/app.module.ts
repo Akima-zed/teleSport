@@ -7,6 +7,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { CountryComponent } from './pages/country/country.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HeaderComponent } from './components/header/header.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { HeaderComponent } from './components/header/header.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+     FormsModule
   ],
   providers: [provideHttpClient()],
   bootstrap: [AppComponent]

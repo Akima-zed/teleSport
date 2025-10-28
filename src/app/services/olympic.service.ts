@@ -43,4 +43,22 @@ export class OlympicService {
   getTotalAthletes(participations: Participation[]): number {
     return participations.reduce((total, p) => total + p.athleteCount, 0);
   }
+
+
+  /**
+    * Trie les pays selon le critère spécifié.
+    * @param countries Liste des pays à trier
+    * @param by 'alphabetical' pour tri alphabétique, 'totalMedals' pour tri par total de médailles
+    * @returns Pays triés
+    */
+   sortCountries(countries: Country[], by: 'alphabetical' | 'totalMedals' = 'totalMedals'): Country[] {
+     if (by === 'alphabetical') {
+       return [...countries].sort((a, b) => a.country.localeCompare(b.country));
+     } else {
+       // Tri décroissant par total de médailles
+       return [...countries].sort((a, b) =>
+         this.getTotalMedals(b.participations) - this.getTotalMedals(a.participations)
+       );
+     }
+   }
 }
