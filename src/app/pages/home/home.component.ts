@@ -48,6 +48,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
+  // Ajout d'une fonction reload pour bouton si nécessaire
+  reload(): void {
+    this.loadData();
+  }
+
   /** Charge les données et construit le graphique */
   loadData(): void {
     this.isLoading = true;

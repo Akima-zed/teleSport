@@ -10,6 +10,12 @@
   </select>
 </div>
 
+<!-- Spinner de chargement -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner"></div>
+  <p>Chargement des données...</p>
+</div>
+
 <!-- Graphique -->
 <div class="chart-wrapper">
   <canvas id="DashboardPieChart"></canvas>
