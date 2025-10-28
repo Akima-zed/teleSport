@@ -1,19 +1,48 @@
+.country-page {
+  .center {
+    text-align: center;
+  }
 
-.wrapper-container {
+  .split {
+    display: flex;
+    justify-content: space-around;
+    margin: 2rem 0;
+
+    .stat {
+      text-align: center;
+      p:first-child {
+        color: gray;
+        font-weight: 500;
+      }
+      p:last-child {
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .wrapper-container {
     display: flex;
     justify-content: center;
-}
+  }
 
-.container {
-    width: 50%;
-    h2{
-        text-align: center;
-        color: gray;
+  .container {
+    width: 60%;
+    h2 {
+      text-align: center;
+      color: gray;
+      margin-top: 1rem;
     }
-}
+  }
 
-@media screen and (max-width: 1000px) {
+  @media screen and (max-width: 1000px) {
     .container {
-        width: 100%;
+      width: 100%;
     }
+  }
+
+  .error {
+    color: #b71c1c;
+    margin-top: 2rem;
+  }
 }

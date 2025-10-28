@@ -15,14 +15,19 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class CountryComponent implements OnInit, OnDestroy {
 
-  public lineChart!: Chart<"line", number[], number>; // Chart : labels = number[]
-  public titlePage: string = '';
-  public totalEntries: number = 0;
-  public totalMedals: number = 0;
-  public totalAthletes: number = 0;
-  public error!: string;
-  private countryName: string | null = null;
 
+   /** Instance du graphique Chart.js */
+  public lineChart!: Chart<"line", number[], number>;
+   /** Nom du pays affiché */
+  public countryName: string = '';
+   /** Totaux affichés dans les KPI */
+  public totalEntries = 0;
+  public totalMedals = 0;
+  public totalAthletes = 0;
+   /** Message d’erreur éventuel */
+  public errorMessage: string = '';
+
+  /** Observable de destruction pour éviter les fuites mémoire */
   private destroy$ = new Subject<void>(); // Pour désinscrire proprement les observables
 
   constructor(
@@ -37,41 +42,44 @@ export class CountryComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (param: ParamMap) => {
-          this.countryName = param.get('countryName');
-          if (this.countryName) {
-            this.loadCountryData(this.countryName);
-          }
-        },
-        error: (err: any) => {
-          this.error = err.message;
-        }
-      });
+           const countryParam = params.get('countryName');
+                if (countryParam) this.loadCountryData(countryParam);
+              }else {
+               this.errorMessage = 'Aucun pays sélectionné.';
+              }
+           },
+           error: (err: any) => this.errorMessage = err.message
+        });
   }
 
   private loadCountryData(name: string) {
     this.olympicService.getCountryByName(name)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (selectedCountry: Country | undefined) => {
-          if (!selectedCountry) return;
+        next: (Country: Country | undefined) => {
+          if (!Country) {
+            this.errorMessage = `Le pays "${name}" est introuvable.`;
+            return;
+           }
 
-          this.titlePage = selectedCountry.country;
-          this.totalEntries = selectedCountry.participations.length;
-          this.totalMedals = this.olympicService.getTotalMedals(selectedCountry.participations);
-          this.totalAthletes = this.olympicService.getTotalAthletes(selectedCountry.participations);
+        // Affectation des informations
+        this.countryName = country.country;
+        this.totalParticipations = country.participations.length;
+        this.totalMedals = this.olympicService.computeTotalMedals(country.participations);
+        this.totalAthletes = this.olympicService.computeTotalAthletes(country.participations);
 
-          const years = selectedCountry.participations.map(p => p.year); // number[]
-          const medals = selectedCountry.participations.map(p => p.medalsCount); // number[]
+          // données pour le graphique
+          const years = Country.participations.map(p => p.year);
+          const medals = Country.participations.map(p => p.medalsCount);
           this.buildChart(years, medals);
         },
-        error: (err: any) => {
-          this.error = err.message;
-        }
+        error: (err: any) => this.errorMessage = err.message
       });
   }
 
-  private buildChart(years: number[], medals: number[]) {
+  private buildChart(years: number[], medals: number[]): void {
     if (this.lineChart) {
+      // Si le graphique existe déjà, on le met à jour
       this.lineChart.data.labels = years;
       this.lineChart.data.datasets[0].data = medals;
       this.lineChart.update();
@@ -82,19 +90,39 @@ export class CountryComponent implements OnInit, OnDestroy {
           labels: years,
           datasets: [
             {
-              label: "Medals",
+              label: 'Nombre de médailles',
               data: medals,
-              backgroundColor: '#0b868f'
-            },
+              backgroundColor: '#0b868f',
+              borderColor: '#0b868f',
+              tension: 0.3,
+              fill: false,
+            }
           ]
         },
-        options: { aspectRatio: 2.5 }
-      });
-    }
-  }
+        options: {
+                  responsive: true,
+                  aspectRatio: 2.5,
+                  plugins: {
+                    legend: { display: false }
+                  },
+                  scales: {
+                    x: { title: { display: true, text: 'Année' } },
+                    y: { title: { display: true, text: 'Médailles' }, beginAtZero: true }
+                  }
+                }
+              });
+            }
+          }
 
   ngOnDestroy() {
-    this.destroy$.next();    // déclenche la désinscription
+    this.destroy$.next();
     this.destroy$.complete();
+  }
+
+/**
+   * Redirige vers la page d’accueil (home)
+   */
+  public goBack(): void {
+    this.router.navigate(['/']);
   }
 }
