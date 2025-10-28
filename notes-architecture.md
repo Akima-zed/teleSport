@@ -32,8 +32,8 @@ Devrait être dans un **service** pour centraliser les appels et les calculs
 Les différents dossiers 
 
 - pages => Contient les pages principales (Home, Country, NotFound) = vitrine
-- component => Contient les composants réutilisables partout dans l'applicaiton 
-- services => Centralise les appels HTTP et toute la logique métier.
+- Composants = blocs réutilisables (carte, graphique…).
+- Services = logique métier et accès aux données.
 - models =>  Contient les interfaces TypeScript (Country, Participation).
 - app-routing.module.ts => Navigations entre les pages 
 - app.module.ts => imports global de l'application Angular, déclare tout les components ( httpclient, formsModule...)
