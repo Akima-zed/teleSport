@@ -19,23 +19,33 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router, private http:HttpClient) { }
 
   ngOnInit() {
-    this.http.get<any[]>(this.olympicUrl).pipe().subscribe(
-      (data) => {
-        console.log(`Liste des données : ${JSON.stringify(data)}`);
-        if (data && data.length > 0) {
-          this.totalJOs = Array.from(new Set(data.map((i: any) => i.participations.map((f: any) => f.year)).flat())).length;
-          const countries: string[] = data.map((i: any) => i.country);
-          this.totalCountries = countries.length;
-          const medals = data.map((i: any) => i.participations.map((i: any) => (i.medalsCount)));
-          const sumOfAllMedalsYears = medals.map((i) => i.reduce((acc: any, i: any) => acc + i, 0));
-          this.buildPieChart(countries, sumOfAllMedalsYears);
-        }
+    this.http.get<any[]>(this.olympicUrl).subscribe({
+      next: (data) => {
+        //console.log('Liste des données :', data);
+
+        if (!data || data.length === 0) return;
+
+        // Nombre total de JOs
+        const allYears = data.flatMap(country => country.participations.map((p: any) => p.year));
+        this.totalJOs = new Set(allYears).size;
+
+        // Liste des pays et total de pays
+        const countries = data.map(country => country.country);
+        this.totalCountries = countries.length;
+
+        // Total des médailles par pays
+        const medalsPerCountry = data.map(country =>
+          country.participations.reduce((sum: number, p: any) => sum + p.medalsCount, 0)
+        );
+
+        // Construire le graphique
+        this.buildPieChart(countries, medalsPerCountry);
       },
-      (error:HttpErrorResponse) => {
-        console.log(`erreur : ${error}`);
-        this.error = error.message
+      error: (err) => {
+        console.error('Erreur lors du chargement des données :', err);
+        this.error = err.message;
       }
-    )
+    });
   }
 
   buildPieChart(countries: string[], sumOfAllMedalsYears: number[]) {
