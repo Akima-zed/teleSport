@@ -10,6 +10,17 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
 
 ---
 
+## Sommaire
+
+- [Prérequis](#prérequis)
+- [Installation](#installation)
+- [Fonctionnalités](#fonctionnalités)
+- [Bonnes pratiques appliquées](#bonnes-pratiques-appliquées)
+- [Limitations connues](#limitations-connues)
+- [Captures d'écran](#Captures d'écran)
+
+---
+
 ## Prérequis
 
 - Node.js ≥ 18
@@ -19,15 +30,19 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
 
 ## Installation
 
-1. Cloner le projet
+1. Cloner le projet:
+```bash
+  git clone https://github.com/Akima-zed/teleSport
+```
 2. Installer les dépendances :
-
-- npm install
+```bash
+  npm install
+```
 
 ## Lancer le serveur de développement
-
-- ng serve
-
+```bash
+  ng serve
+````
 - Puis ouvrir http://localhost:4200/ dans votre navigateur.
 - L’application se recharge automatiquement lors de modifications du code source.
 
@@ -73,3 +88,5 @@ Chargement :
 - Responsive partiel
 - Pas de tests unitaires
 - Graphiques et styles simples
+
+## Captures d'écran
