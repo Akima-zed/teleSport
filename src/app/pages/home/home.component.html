@@ -1,28 +1,61 @@
-<!-- Header réutilisable -->
-<app-header [title]="titlePage" [indicators]="headerIndicators"></app-header>
+<!-- =========================================================
+  HomeComponent Template
+  -------------------------------------------------------------
+  Objectif :
+  - Afficher un tableau de bord synthétique (médailles par pays)
+  - Gérer les états : chargement, erreur, données prêtes
+  - Proposer un tri dynamique et une navigation vers le détail
+========================================================= -->
 
-<!-- Sélecteur du tri -->
-<div class="sort-container">
+<!-- 🔹 Header réutilisable global -->
+<app-header
+  [title]="titlePage"
+  [indicators]="headerIndicators">
+</app-header>
+
+<!-- 🔹 Section introductive -->
+<section class="intro">
+  <p>
+    Ce tableau de bord présente le nombre total de médailles remportées
+    par chaque pays depuis la création des Jeux Olympiques modernes.
+    Cliquez sur un pays du graphique pour consulter le détail
+    de ses participations.
+  </p>
+</section>
+
+<!-- 🔹 Sélecteur de tri -->
+<section class="sort-container">
   <label for="sort">Trier par :</label>
-  <select id="sort" [(ngModel)]="sortBy" (change)="onSortChange()">
+  <select
+    id="sort"
+    [(ngModel)]="sortBy"
+    (change)="onSortChange()"
+    aria-label="Sélecteur de tri des pays">
     <option value="totalMedals">Total des médailles</option>
     <option value="alphabetical">Alphabétique</option>
   </select>
-</div>
+</section>
 
-<!-- Spinner de chargement -->
-<div *ngIf="isLoading" class="loading-container">
+<!-- 🔹 État : chargement -->
+<section *ngIf="isLoading" class="loading-container" role="status" aria-live="polite">
   <div class="spinner"></div>
   <p>Chargement des données...</p>
-</div>
+</section>
 
-<!-- Graphique -->
-<div class="chart-wrapper">
-  <canvas id="DashboardPieChart"></canvas>
-</div>
-
-<!-- Affichage erreur avec bouton Réessayer -->
-<div *ngIf="error" class="error-message">
+<!-- 🔹 État : erreur -->
+<section *ngIf="error" class="error-message" role="alert">
   <p>❌ Une erreur est survenue lors du chargement des données.</p>
-  <button class="retry-btn" (click)="loadData()">Réessayer</button>
-</div>
+  <button
+    class="retry-btn"
+    (click)="reload()"
+    aria-label="Réessayer le chargement">
+    Réessayer
+  </button>
+</section>
+
+<!-- 🔹 État : données prêtes -->
+<section *ngIf="!isLoading && !error" class="chart-section">
+  <div class="chart-wrapper">
+    <canvas id="DashboardPieChart"></canvas>
+  </div>
+</section>
