@@ -142,7 +142,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   /** Construit le graphique principal */
   private renderChart(data: Country[]): void {
     // Spread operator utilisé pour ajouter "Atlantis" à la liste existante des pays ( pour l'exercice)
-    const labels = [...this.countries.map(c => c.country), 'Atlantis'];
+    const labels = [...this.countries.map(c => c.country), 'pays test '];
     const medals = [
       ...this.countries.map(c => this.olympicService.getTotalMedals(c.participations)),
       50
