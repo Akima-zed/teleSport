@@ -63,7 +63,8 @@ src/
 │ ├─ app.module.ts  # Module racine (déclarations, imports, providers)
 │ └─ app-routing.module.ts  # Définition des routes (home, country/:id, not-found)
 ├─ assets/
-│   ├─images/  # Ressources graphiques (logos, drapeaux)
+│   ├─ mages/  # Ressources graphiques (logos, drapeaux)
+│   ├─ screenShot/ # des pages du site
 │   └─ mock/olympic.json # # Données mockées locales (en attendant une API)
 ├─ styles.scss # Styles globaux
 ├─ index.html  # Point d'entrée du DOM - avec <app-root> dans laquelle Angular injecte l'application

@@ -16,6 +16,7 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
 - [Installation](#installation)
 - [Fonctionnalités](#fonctionnalités)
 - [Bonnes pratiques appliquées](#bonnes-pratiques-appliquées)
+- [Architecture / Structure du projet](#Architecture / Structure du projet)
 - [Limitations connues](#limitations-connues)
 - [Captures d'écran](#Captures d'écran)
 
@@ -39,7 +40,7 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
   npm install
 ```
 
-## Lancer le serveur de développement
+## Lancer l'application
 ```bash
   ng serve
 ````
@@ -73,7 +74,7 @@ Chargement :
 
 ## Bonnes pratiques appliquées
 
-- Typage strict (pas de any, utilisation d'interface)
+- Typage strict (interfaces, pas de any)
 - Observables détruits avec takeUntil
 - Gestion des erreurs avec catchError
 - Code factorisé et lisible
@@ -82,10 +83,24 @@ Chargement :
 - Navigation sécurisée pour ID invalide
 
 
+## Architecture / Structure du projet
+
+## Architecture / Structure du projet
+
+| Dossier / Fichier        | Description                                        |
+|--------------------------|----------------------------------------------------|
+| app/components/header/   | Composant réutilisable Header                      |
+| app/components/Home/     | Home                                               |
+| app/components/country/ | Détail d’un pays                                   |
+| app/services/            | Services centralisant la logique métier et données |
+| app/models/              | Interfaces TypeScript                              |
+| app/app-routing.module.ts | Définition des routes                              |
+| assets/screenShots/      | Captures d’écran                                   |
+
+
 ## Limitations connues
 
 - Données mock uniquement, pas de backend réel
-- Responsive partiel
 - Pas de tests unitaires
 - Graphiques et styles simples
 
