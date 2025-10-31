@@ -1,17 +1,35 @@
-<!-- Header réutilisable -->
-<app-header [title]="headerTitle" [indicators]="headerIndicators"></app-header>
+<!-- =========================================================
+  CountryComponent Template
+  ----------------------------------------------------------
+  Objectif :
+  - Afficher les données détaillées d’un pays
+  - Graphique des médailles par année
+  - Gestion des états : chargement, erreur, données prêtes
+  - Navigation retour vers le dashboard
+========================================================= -->
 
-<!-- Spinner de chargement -->
+<!-- 🔹 Header global réutilisable -->
+<app-header
+  [title]="headerTitle"
+  [indicators]="headerIndicators">
+</app-header>
+
+<!-- 🔹 Spinner de chargement -->
 <div *ngIf="isLoading" class="loading-container">
   <div class="spinner"></div>
   <p>Chargement des données...</p>
 </div>
 
-<div class="country-page">
-  <div class="header center">
-    <h1>{{ countryName }}</h1>
-  </div>
+<!-- 🔹 État erreur -->
+<div *ngIf="!isLoading && error" class="error-message center">
+  <p>❌ {{ error }}</p>
+  <button class="retry-btn" (click)="reload()">Réessayer</button>
+</div>
 
+<!-- 🔹 Données disponibles -->
+<div *ngIf="!isLoading && !error" class="country-section">
+
+  <!-- Info principales -->
   <div class="stats-container split">
     <div class="stat">
       <p>Number of Entries</p>
@@ -27,20 +45,14 @@
     </div>
   </div>
 
-  <div class="chart-section wrapper-container">
-    <div class="container">
-      <canvas id="countryChart"></canvas>
-      <h2>Medals per Year</h2>
-    </div>
+  <!-- Graphique -->
+  <div class="chart-wrapper">
+    <canvas id="countryChart"></canvas>
+    <h2>Medals per Year</h2>
   </div>
 
-  <div class="center">
-    <a routerLink="">← Back to Dashboard</a>
+  <!-- Bouton retour -->
+  <div class="center back-link">
+    <a routerLink="/">← Back to Dashboard</a>
   </div>
 </div>
-  <!-- Affichage erreur avec bouton Réessayer -->
-  <div *ngIf="!isLoading && errorMessage" class="error center">
-    <p>❌ {{ errorMessage }}</p>
-    <button class="retry-btn" (click)="ngOnInit()">Réessayer</button>
-  </div>
-

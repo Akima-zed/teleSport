@@ -1,122 +1,154 @@
-.country-page {
-  .center {
+/* =========================================================
+   Styles du CountryComponent
+   ----------------------------------------------------------
+   Objectif :
+   - Responsive et clair
+   - Structurer les sections : stats, graphique, erreur
+   - Fournir une UX cohérente avec HomeComponent
+========================================================= */
+
+.country-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* --- Conteneur des stats --- */
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 2rem 0;
+
+  .stat {
     text-align: center;
-  }
 
-  .split {
-    display: flex;
-    justify-content: space-around;
-    margin: 2rem 0;
-
-    .stat {
-      text-align: center;
-      p:first-child {
-        color: gray;
-        font-weight: 500;
-      }
-      p:last-child {
-        font-size: 1.4rem;
-        font-weight: bold;
-      }
-    }
-  }
-
-  .wrapper-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  .container {
-    width: 60%;
-    h2 {
-      text-align: center;
+    p:first-child {
       color: gray;
-      margin-top: 1rem;
-    }
-  }
-
-  .loading-container {
-    text-align: center;
-    margin: 2rem 0;
-
-    .spinner {
-      margin: 1rem auto;
-      width: 50px;
-      height: 50px;
-      border: 6px solid #ccc;
-      border-top-color: #0b868f;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    p {
-      margin-top: 10px;
       font-weight: 500;
     }
-  }
 
-  .retry-btn {
-    margin-top: 10px;
-    padding: 6px 12px;
-    background-color: #0b868f;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .retry-btn:hover {
-    background-color: #07666b;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-
-  @media screen and (max-width: 1000px) {
-    .container {
-      width: 100%;
+    p:last-child {
+      font-size: 1.4rem;
+      font-weight: bold;
     }
-  }
-
-  .error {
-    color: #b71c1c;
-    margin-top: 2rem;
   }
 }
 
+/* --- Graphique --- */
+.chart-wrapper {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
 
-.header-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1rem;
+  h2 {
+    text-align: center;
+    color: gray;
+    margin-top: 1rem;
+  }
+}
 
-  .header-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+/* --- Loading spinner --- */
+.loading-container {
+  text-align: center;
+  margin: 2rem 0;
+
+  .spinner {
+    margin: 1rem auto;
+    width: 50px;
+    height: 50px;
+    border: 6px solid #eee;
+    border-top-color: #0b868f;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 
-  .header-kpis {
-    display: flex;
-    gap: 2rem;
+  p {
+    margin-top: 10px;
+    font-weight: 500;
+  }
+}
 
-    .kpi {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-      .kpi-label {
-        font-weight: 500;
-        color: #555;
-      }
+/* --- Message d’erreur --- */
+.error-message {
+  color: #b71c1c;
+  margin-top: 2rem;
+  text-align: center;
 
-      .kpi-value {
-        font-size: 1.2rem;
-        font-weight: bold;
+  .retry-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #0b868f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #07666b;
+    }
+  }
+}
+
+/* --- Centrage / lien retour --- */
+.center {
+  text-align: center;
+
+  &.back-link {
+    margin-top: 2rem;
+
+    a {
+      color: #0b868f;
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
       }
     }
+  }
+}
+
+/* =========================================================
+   Media Queries
+========================================================= */
+
+/* Desktop ≥1200px : 12 colonnes, stats côte à côte */
+@media (min-width: 1200px) {
+  .stats-container {
+    flex-direction: row;
+  }
+}
+
+/* Tablette 768–1199px : 8 colonnes, graphique pleine largeur */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .stats-container {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .chart-wrapper {
+    width: 100%;
+  }
+}
+
+/* Mobile ≤767px : 4 colonnes, pile verticale */
+@media (max-width: 767px) {
+  .stats-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .chart-wrapper {
+    width: 100%;
+  }
+
+  .retry-btn {
+    width: 100%;
   }
 }
