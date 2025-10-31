@@ -10,7 +10,7 @@
 
 ### Problèmes identifiés
 1. **Structure**
-  - Appels HTTP directs dans les composants (`this.http.get<any[]>(...)`) → devrait être centralisé dans un **service** (`OlympicService`) qui gère aussi les calculs métier.
+  - Appels via HttpClient dans les composants (`this.http.get<any[]>(...)`) → devrait être centralisé dans un **service** (`OlympicService`) qui gère aussi les calculs métier.
 2. **Duplication de code**
   - Calculs répétés dans `HomeComponent` et `CountryComponent` :
     ```ts
@@ -46,29 +46,32 @@
 src/
 ├─ app/
 │ ├─ components/ # Composants réutilisables
-│ │ └─ header/ # Header avec KPI
-│ ├─ models/ # Interfaces TypeScript (Country, Participation)
+│ │ └─ header/ # Composant global : logo, titre, KPI (barre haute)
+│ ├─ models/ # Interfaces TypeScript (structure des données)
+│ │ ├─ Country
+│ │ └─ Participation
 │ ├─ pages/ # Pages routées
 │ │ ├─ home/ # Dashboard
 │ │ ├─ country/ # Détail d'un pays
-│ │ └─ not-found/ #page 404 
-│ ├─ services/ 
+│ │ └─ not-found/ # page 404 
+│ ├─ services/   # Couches métier et accès données
 │ │ └─ OlympicService.ts
-│ ├─ app.component.ts
-│ ├─ app.component.html
-│ ├─ app.component.scss
-│ ├─ app.component.spec.ts
-│ ├─ app.module.ts
-│ ├─ app-routing.module.ts
-│ └─ app.module.ts
+│ ├─ app.component.ts     # Composant racine de l'application
+│ ├─ app.component.html  # Composant racine de l'application
+│ ├─ app.component.scss  # Composant racine de l'application
+│ ├─ app.component.spec.ts    # Tests unitaires du composant principal
+│ ├─ app.module.ts  # Module racine (déclarations, imports, providers)
+│ └─ app-routing.module.ts  # Définition des routes (home, country/:id, not-found)
 ├─ assets/
-│   ├─images/ # image de l'appli
-│   └─ mock/olympic.json # Données mock
+│   ├─images/  # Ressources graphiques (logos, drapeaux)
+│   └─ mock/olympic.json # # Données mockées locales (en attendant une API)
 ├─ styles.scss # Styles globaux
-├─ index.html
-├─ main.ts
-├─ polyfills.ts
-├─ test.ts # Configuration tests unitaires Karma/Jasmine
+├─ index.html  # Point d'entrée du DOM - avec <app-root> dans laquelle Angular injecte l'application
+├─ main.ts    # Point d’entrée technique qui initialise Angular et démarre le module racine AppModule.
+├─ polyfills.ts       # Compatibilité navigateurs
+├─ test.ts # Configuration tests unitaires Karma/Jasmine 
+
+
 
 ---
 
@@ -101,8 +104,7 @@ src/
 - Typage strict (`noImplicitAny` activé, création d’interfaces TypeScript).
 - Factorisation du code : calculs et appels HTTP centralisés dans `OlympicService`.
 - Observables détruits avec `takeUntil` pour éviter les fuites mémoire.
-- Navigation sécurisée via ActivatedRoute + contrôle d’ID invalide.
-- Navigation sécurisée : gestion des IDs invalides.
+- Navigation sécurisée via ActivatedRoute + contrôle d’ID invalide => sinon redirigé ver /not-found
 - Composants < 300 lignes pour lisibilité.
 - Responsive design Desktop / Tablette / Mobile.
 
@@ -118,6 +120,7 @@ src/
 ## 7. Synthèse personnelle
 
 Le projet fonctionne, mais reste à un stade prototype.
-J’ai identifié les points clés pour le rendre maintenable, typé et scalable.
+L’objectif a été de rendre l’application maintenable (structure claire), typée (interfaces strictes) 
+et scalable (architecture modulaire).
 Ma priorité a été : une architecture claire, services bien isolés, et interface responsive propre.
 Ces choix visent à professionnaliser le code tout en restant fidèle à l’objectif du projet.
