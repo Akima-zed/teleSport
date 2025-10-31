@@ -1,8 +1,74 @@
-.center {
+/* =========================================================
+   Styles du NotFoundComponent
+   ----------------------------------------------------------
+   Objectif :
+   - Centrer le message et le lien
+   - Responsive sur toutes les tailles d’écran
+========================================================= */
+
+.not-found-container {
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  padding: 1rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #b71c1c;
+    margin-bottom: 1.5rem;
+  }
+
+  .back-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #0b868f;
+    color: white;
+    font-weight: 500;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #07666b;
+    }
+  }
+}
+
+/* =========================================================
+   Media Queries
+========================================================= */
+
+/* Desktop ≥1200px */
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 2.5rem;
+  }
+}
+
+/* Tablette 768–1199px */
+@media (min-width: 768px) and (max-width: 1199px) {
+  h2 {
+    font-size: 2rem;
+  }
+
+  .back-link {
+    padding: 0.6rem 1.2rem;
+  }
+}
+
+/* Mobile ≤767px */
+@media (max-width: 767px) {
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  .back-link {
+    width: 100%;
+    padding: 0.5rem;
+  }
 }
