@@ -167,7 +167,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           }]
         },
         options: {
-          aspectRatio: 2.5,
+          responsive: true,
+          aspectRatio: window.innerWidth <= 767 ? 1 : 2.5,
           plugins: { legend: { position: 'bottom' } },
           onClick: (event) => this.onChartClick(event)
         }
