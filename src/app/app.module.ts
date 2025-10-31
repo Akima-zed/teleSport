@@ -9,6 +9,14 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FormsModule } from '@angular/forms';
 
+
+/**
+ * AppModule
+ * --------------------------------------------------
+ * Module racine de l’application.
+ * Déclare les composants globaux, importe les modules
+ */
+
 @NgModule({
   declarations: [
     AppComponent,

@@ -4,6 +4,13 @@ import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { CountryComponent } from "./pages/country/country.component";
 
+/**
+ * AppRoutingModule
+ * --------------------------------------------------
+ * Définit les routes principales de l’application et
+ * configure le router Angular.
+ */
+
 const routes: Routes = [
   {
     path: '',
