@@ -90,3 +90,9 @@ Chargement :
 - Graphiques et styles simples
 
 ## Captures d'écran
+![country_desktop.png](src/assets/screenShots/country_desktop.png)
+![country_mobil.png](src/assets/screenShots/country_mobil.png)
+![country_tablette.png](src/assets/screenShots/country_tablette.png)
+![home_Desktop.png](src/assets/screenShots/home_Desktop.png)
+![Home_mobile.png](src/assets/screenShots/Home_mobile.png)
+![Home_tablette.png](src/assets/screenShots/Home_tablette.png)
