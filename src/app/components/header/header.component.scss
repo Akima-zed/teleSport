@@ -1,9 +1,18 @@
+/* =========================================================
+   Styles du HeaderComponent
+   --------------------------------------------------------
+   Objectif :
+   - Mise en forme du titre et des KPIs
+   - Flexbox pour alignement et responsive
+   - Media queries pour Desktop / Tablette / Mobile
+========================================================= */
+
 .header-container {
   text-align: center;
   margin-bottom: 2rem;
-  background-color: beige ;
+  background-color: beige;
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
   .header-title {
     font-size: 2rem;
@@ -34,6 +43,41 @@
         font-size: 1.2rem;
         font-weight: bold;
         color: #000;
+      }
+    }
+  }
+}
+
+/* Media Queries pour responsive design */
+@media (max-width: 768px) {
+  .header-title {
+    font-size: 1.6rem;
+  }
+  .header-kpis {
+    gap: 1rem;
+    .kpi {
+      min-width: 60px;
+      padding: 0.4rem 0.8rem;
+      .kpi-value {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: 1.4rem;
+  }
+  .header-kpis {
+    flex-direction: column;
+    gap: 0.8rem;
+    .kpi {
+      width: 100%;
+      min-width: auto;
+      padding: 0.5rem;
+      .kpi-value {
+        font-size: 1rem;
       }
     }
   }

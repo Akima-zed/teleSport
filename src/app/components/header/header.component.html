@@ -1,7 +1,16 @@
+<!-- =========================================================
+  HeaderComponent Template
+  ---------------------------------------------------------
+  Objectif :
+  - Afficher le titre principal de la page
+  - Afficher les KPI (indicateurs) de manière responsive
+  - Réutilisable sur toutes les pages
+========================================================= -->
+
 <div class="header-container">
   <h1 class="header-title">{{ title }}</h1>
 
-  <div class="header-kpis" *ngIf="indicators.length > 0">
+  <div class="header-kpis" *ngIf="indicators.length">
     <div class="kpi" *ngFor="let kpi of indicators">
       <span class="kpi-label">{{ kpi.label }}</span>
       <span class="kpi-value">{{ kpi.value }}</span>
