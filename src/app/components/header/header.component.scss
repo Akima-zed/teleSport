@@ -50,35 +50,34 @@
 
 /* Media Queries pour responsive design */
 @media (max-width: 768px) {
-  .header-title {
-    font-size: 1.6rem;
-  }
+  .header-title { font-size: 1.6rem; }
+
   .header-kpis {
     gap: 1rem;
+    justify-content: space-around;
+
     .kpi {
-      min-width: 60px;
+      flex: 1 1 80px; /* flexible sur tablette */
+      max-width: 120px;
       padding: 0.4rem 0.8rem;
-      .kpi-value {
-        font-size: 1rem;
-      }
+      .kpi-value { font-size: 1rem; }
     }
   }
 }
 
 @media (max-width: 480px) {
-  .header-title {
-    font-size: 1.4rem;
-  }
+  .header-title { font-size: 1.4rem; }
+
   .header-kpis {
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.6rem; /* un peu plus serré mais homogène */
+    align-items: stretch; /* prend toute la largeur disponible */
+
     .kpi {
-      width: 100%;
-      min-width: auto;
-      padding: 0.5rem;
-      .kpi-value {
-        font-size: 1rem;
-      }
+      flex: 1 1 auto; /* s’adapte à la largeur du conteneur */
+      max-width: none;
+      padding: 0.5rem 0.8rem;
+      .kpi-value { font-size: 1rem; }
     }
   }
 }
