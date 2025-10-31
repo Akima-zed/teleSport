@@ -1,6 +1,6 @@
 # Olympic Games Starter – Note d'Architecture
 
-## 1. Analyse du code existant
+## 1. Analyse du code existant et problèmes identifiés
 
 ### Observations globales
 - L'application se lance avec `ng serve` et les pages fonctionnent.
@@ -36,7 +36,7 @@
 1. Refactorer l’architecture pour séparer **logique métier** et **UI**.
 2. Factoriser le code pour éviter les duplications.
 3. Remplacer tous les `any` par des interfaces strictes (`Country`, `Participation`).
-4. Nettoyer le code (console.log, variables inutilisées).
+4. Nettoyer le code (console.log, élément inutilisés).
 5. Refaire le CSS pour un rendu **responsive** (desktop, tablette, mobile).
 
 ---
@@ -74,13 +74,15 @@ src/
 
 ## 4. Chargement et gestion des erreurs
 
-- **Spinner ou Skeleton**
+- **Loading State**
   - Ajouter une variable `loading: boolean` dans les composants.
   - Dans le template :
     ```html
     <app-spinner *ngIf="loading"></app-spinner>
     <div *ngIf="!loading && !errorMessage">Contenu</div>
     ```
+    Cet état évite un effet “page vide” et améliore l’UX.
+  
 - **Gestion des erreurs**
   - Utiliser `catchError` dans les services ou observables.
   - Afficher un **message clair** + **bouton retour** vers la page précédente.
@@ -99,7 +101,7 @@ src/
 - Typage strict (`noImplicitAny` activé, création d’interfaces TypeScript).
 - Factorisation du code : calculs et appels HTTP centralisés dans `OlympicService`.
 - Observables détruits avec `takeUntil` pour éviter les fuites mémoire.
-- Utilisation de `ActivatedRoute` pour récupérer l’ID pays.
+- Navigation sécurisée via ActivatedRoute + contrôle d’ID invalide.
 - Navigation sécurisée : gestion des IDs invalides.
 - Composants < 300 lignes pour lisibilité.
 - Responsive design Desktop / Tablette / Mobile.
@@ -112,5 +114,10 @@ src/
 - Graphiques et styles simples.
 - Responsive partiel (nécessite ajustement CSS).
 - Pas de tests unitaires.
-- Certaines fonctionnalités d’UX à améliorer (ex: tri, filtrage avancé).
 
+## 7. Synthèse personnelle
+
+Le projet fonctionne, mais reste à un stade prototype.
+J’ai identifié les points clés pour le rendre maintenable, typé et scalable.
+Ma priorité a été : une architecture claire, services bien isolés, et interface responsive propre.
+Ces choix visent à professionnaliser le code tout en restant fidèle à l’objectif du projet.
