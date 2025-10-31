@@ -141,10 +141,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   /** Construit le graphique principal */
   private renderChart(data: Country[]): void {
-    const labels = this.countries.map(c => c.country);
-    const medals = this.countries.map(c =>
-      this.olympicService.getTotalMedals(c.participations)
-    );
+    // Spread operator utilisé pour ajouter "Atlantis" à la liste existante des pays ( pour l'exercice)
+    const labels = [...this.countries.map(c => c.country), 'Atlantis'];
+    const medals = [
+      ...this.countries.map(c => this.olympicService.getTotalMedals(c.participations)),
+      50
+    ];
+
 
     // Utiliser setTimeout pour s'assurer que le canvas est présent dans le DOM
     setTimeout(() => {
@@ -190,9 +193,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (points.length) {
       const index = points[0].index;
       const countryName = this.pieChart.data.labels?.[index];
-      if (countryName) this.router.navigate(['country', countryName]);
+
+    // Vérifie si le pays existe dans tes données réelles
+    const exists = this.countries.some(c => c.country === countryName);
+    if (exists) {
+      this.router.navigate(['country', countryName]);
+    } else {
+      this.router.navigate(['**']);
     }
   }
+}
 
   /** Rafraîchit les données après un changement de tri */
   onSortChange(): void {
