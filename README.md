@@ -16,9 +16,9 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
 - [Installation](#installation)
 - [Fonctionnalités](#fonctionnalités)
 - [Bonnes pratiques appliquées](#bonnes-pratiques-appliquées)
-- [Structure du projet ](#Structure du projet )
+- [Structure du projet ](#Structure-du-projet )
 - [Limitations connues](#limitations-connues)
-- [Captures d'écran](#Captures d'écran)
+- [ScreenShot](#ScreenShot)
 
 ---
 
@@ -102,7 +102,7 @@ Chargement :
 - Pas de tests unitaires
 - Graphiques et styles simples
 
-## Captures d'écran
+## ScreenShot
 ![country_desktop.png](src/assets/screenShots/country_desktop.png)
 ![country_mobil.png](src/assets/screenShots/country_mobil.png)
 ![country_tablette.png](src/assets/screenShots/country_tablette.png)
