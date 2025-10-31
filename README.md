@@ -16,7 +16,7 @@ Ce projet est un starter utilisant **Angular 18** et des données mock JSON pour
 - [Installation](#installation)
 - [Fonctionnalités](#fonctionnalités)
 - [Bonnes pratiques appliquées](#bonnes-pratiques-appliquées)
-- [Architecture / Structure du projet](#Architecture / Structure du projet)
+- [Structure du projet ](#Structure du projet )
 - [Limitations connues](#limitations-connues)
 - [Captures d'écran](#Captures d'écran)
 
@@ -83,9 +83,7 @@ Chargement :
 - Navigation sécurisée pour ID invalide
 
 
-## Architecture / Structure du projet
-
-## Architecture / Structure du projet
+## Structure du projet
 
 | Dossier / Fichier        | Description                                        |
 |--------------------------|----------------------------------------------------|
