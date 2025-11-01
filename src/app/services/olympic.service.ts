@@ -4,14 +4,12 @@
  * Objectif :
  *  - Centraliser l'accès aux données des pays et participations
  *  - Fournir des méthodes pour filtrer, trier et calculer des statistiques
- *
- * Technologies utilisées :
- *  - Angular HttpClient pour charger le mock JSON
- *  - RxJS pour la gestion des flux asynchrones
+ *  - Gérer proprement les erreurs HTTP et métier
  */
+
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, map, catchError, throwError } from 'rxjs';
 import { Participation } from '../models/participation';
 import { Country } from '../models/country';
 
@@ -31,13 +29,16 @@ export class OlympicService {
 
   /** Récupère la liste complète des pays */
   getCountries(): Observable<Country[]> {
-    return this.http.get<Country[]>(this.olympicUrl);
+    return this.http.get<Country[]>(this.olympicUrl).pipe(
+      catchError(err => this.handleError(err, 'Impossible de charger la liste des pays'))
+    );
   }
 
   /** Récupère un pays par son nom */
   getCountryByName(name: string): Observable<Country | undefined> {
     return this.getCountries().pipe(
-      map(countries => countries.find(c => c.country === name))
+      map(countries => countries.find(c => c.country === name)),
+      catchError(err => this.handleError(err, `Impossible de charger les données pour le pays "${name}"`))
     );
   }
 
@@ -53,6 +54,12 @@ export class OlympicService {
   /** Calcule le total des athlètes pour un pays donné */
   getTotalAthletes(participations: Participation[]): number {
     return participations.reduce((total, p) => total + p.athleteCount, 0);
+  }
+
+  /** Calcule le nombre total d'éditions des JO représentées dans les données */
+  getTotalJOs(countries: Country[]): number {
+    const allYears = countries.flatMap(c => c.participations.map(p => p.year));
+    return new Set(allYears).size;
   }
 
   // ------------------------------------------------------------
@@ -76,5 +83,28 @@ export class OlympicService {
         (a, b) => this.getTotalMedals(b.participations) - this.getTotalMedals(a.participations)
       );
     }
+  }
+
+  // ------------------------------------------------------------
+  // Error Handling
+  // ------------------------------------------------------------
+
+  /**
+   * Gestion centralisée des erreurs HTTP et métier
+   * @param error Erreur reçue
+   * @param userMessage Message clair pour l’utilisateur
+   */
+  private handleError(error: unknown, userMessage: string): Observable<never> {
+    let message: string;
+
+    if (error instanceof HttpErrorResponse) {
+      message = error.message ? `${error.message} (status ${error.status})` : `Erreur HTTP ${error.status}`;
+    } else if (error instanceof Error) {
+      message = error.message;
+    } else {
+      message = 'Erreur inconnue';
+    }
+
+    return throwError(() => new Error(`${userMessage}: ${message}`));
   }
 }

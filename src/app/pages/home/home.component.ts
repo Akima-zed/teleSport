@@ -1,15 +1,13 @@
 /**
  * HomeComponent
  * ------------------------------------------------------------
- * Affiche le tableau de bord principal :
- * - Graphique Chart.js du total de médailles par pays
- * - Tri dynamique (alphabétique / total médailles)
- * - Gestion des états de chargement et d’erreur
- * - Redirection vers la page détail au clic sur un pays
+ * Rôle :
+ *  - Afficher le tableau de bord principal (Chart.js)
+ *  - Consommer les données via OlympicService
+ *  - Gérer états de chargement / erreur / tri
  */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
 import Chart from 'chart.js/auto';
@@ -23,7 +21,8 @@ import { OlympicService } from '../../services/olympic.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  /** Titre et indicateurs du header */
+
+  /** En-tête de la page */
   titlePage = 'Médailles par pays';
   headerIndicators: { label: string; value: number }[] = [];
 
@@ -32,11 +31,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   totalCountries = 0;
   totalJOs = 0;
 
-  /** États de chargement et d’erreur */
+  /** États UI */
   isLoading = true;
   error = '';
 
-  /** Paramètre de tri */
+  /** Paramètres */
   sortBy: 'alphabetical' | 'totalMedals' = 'totalMedals';
 
   /** Graphique Chart.js */
@@ -45,17 +44,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   /** Gestion du cycle de vie RxJS */
   private readonly destroy$ = new Subject<void>();
 
-  /** Données mockées locales */
-  private readonly olympicUrl = './assets/mock/olympic.json';
-
   constructor(
     private readonly router: Router,
-    private readonly http: HttpClient,
     private readonly olympicService: OlympicService
   ) {}
 
   // ------------------------------------------------------------
-  // Lifecycle Hooks
+  // Lifecycle
   // ------------------------------------------------------------
 
   ngOnInit(): void {
@@ -72,60 +67,31 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Data Loading
   // ------------------------------------------------------------
 
-  /**
-   * Charge les données depuis le mock JSON,
-   * met à jour les totaux et construit le graphique.
-   */
   private loadData(): void {
-    this.isLoading = true;
-    this.error = '';
-
-    this.http.get<Country[]>(this.olympicUrl)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError((err: unknown) => {
-          this.handleError(err);
-          return of([]);
-        })
-      )
-      .subscribe((data) => {
-        this.isLoading = false;
-
-        if (!data.length) {
-          this.error = 'Aucune donnée disponible.';
-          return;
-        }
-
-        this.updateMetrics(data);
-        this.renderChart(data);
-      });
-  }
-
-  // ------------------------------------------------------------
-  // Error Handling
-  // ------------------------------------------------------------
-
-  /** Gère les erreurs HTTP / réseau de façon centralisée */
-  private handleError(err: unknown): void {
-    if (err instanceof HttpErrorResponse) {
-      this.error = err.message || `Erreur HTTP ${err.status}`;
-    } else if (err instanceof Error) {
-      this.error = err.message;
-    } else {
-      this.error = 'Erreur inconnue';
+      this.isLoading = true;
+      this.error = '';
+      this.olympicService.getCountries()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: data => {
+            this.isLoading = false;
+            if (!data.length) {
+              this.error = 'Aucune donnée disponible.';
+              return;
+            }
+            this.updateMetrics(data);
+            this.renderChart(data);
+          },
+          error: err => { this.isLoading = false; this.error = err.message; }
+        });
     }
-    this.isLoading = false;
-  }
 
   // ------------------------------------------------------------
   // Data Processing
   // ------------------------------------------------------------
 
-  /** Met à jour les totaux et le header */
   private updateMetrics(data: Country[]): void {
-    const allYears = data.flatMap(c => c.participations.map(p => p.year));
-    this.totalJOs = new Set(allYears).size;
-
+    this.totalJOs = this.olympicService.getTotalJOs(data);
     this.countries = this.olympicService.sortCountries(data, this.sortBy);
     this.totalCountries = this.countries.length;
 
@@ -139,17 +105,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Chart Rendering
   // ------------------------------------------------------------
 
-  /** Construit le graphique principal */
   private renderChart(data: Country[]): void {
-    // Spread operator utilisé pour ajouter "Atlantis" à la liste existante des pays ( pour l'exercice)
     const labels = [...this.countries.map(c => c.country), 'pays test '];
     const medals = [
       ...this.countries.map(c => this.olympicService.getTotalMedals(c.participations)),
       50
     ];
 
-
-    // Utiliser setTimeout pour s'assurer que le canvas est présent dans le DOM
     setTimeout(() => {
       this.pieChart?.destroy();
 
@@ -176,11 +138,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+
   // ------------------------------------------------------------
   // Interactions
   // ------------------------------------------------------------
 
-  /** Gère le clic sur une portion du graphique */
   private onChartClick(event: any): void {
     if (!this.pieChart) return;
 
@@ -195,22 +157,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       const index = points[0].index;
       const countryName = this.pieChart.data.labels?.[index];
 
-    // Vérifie si le pays existe dans tes données réelles
-    const exists = this.countries.some(c => c.country === countryName);
-    if (exists) {
-      this.router.navigate(['country', countryName]);
-    } else {
-      this.router.navigate(['**']);
+      const exists = this.countries.some(c => c.country === countryName);
+      this.router.navigate([exists ? 'country' : '**', countryName]);
     }
   }
-}
 
-  /** Rafraîchit les données après un changement de tri */
   onSortChange(): void {
     this.loadData();
   }
 
-  /** Recharge les données après une erreur */
   reload(): void {
     this.loadData();
   }
