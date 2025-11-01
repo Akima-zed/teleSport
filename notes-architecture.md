@@ -46,6 +46,7 @@
 src/
 ├─ app/
 │ ├─ components/ # Composants réutilisables
+│ │ ├─ chart/ # graphique réutilisable
 │ │ └─ header/ # Composant global : logo, titre, KPI (barre haute)
 │ ├─ models/ # Interfaces TypeScript (structure des données)
 │ │ ├─ Country
@@ -59,7 +60,6 @@ src/
 │ ├─ app.component.ts     # Composant racine de l'application
 │ ├─ app.component.html  # Composant racine de l'application
 │ ├─ app.component.scss  # Composant racine de l'application
-│ ├─ app.component.spec.ts    # Tests unitaires du composant principal
 │ ├─ app.module.ts  # Module racine (déclarations, imports, providers)
 │ └─ app-routing.module.ts  # Définition des routes (home, country/:id, not-found)
 ├─ assets/
@@ -69,8 +69,8 @@ src/
 ├─ styles.scss # Styles globaux
 ├─ index.html  # Point d'entrée du DOM - avec <app-root> dans laquelle Angular injecte l'application
 ├─ main.ts    # Point d’entrée technique qui initialise Angular et démarre le module racine AppModule.
-├─ polyfills.ts       # Compatibilité navigateurs
-├─ test.ts # Configuration tests unitaires Karma/Jasmine 
+└─ polyfills.ts       # Compatibilité navigateurs
+
 
 
 
