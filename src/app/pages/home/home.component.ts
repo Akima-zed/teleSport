@@ -90,6 +90,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           },
           error: err => {
+            // arrêter le loading et afficher un message clair
             this.isLoading = false;
             this.error = err.message; }
         });

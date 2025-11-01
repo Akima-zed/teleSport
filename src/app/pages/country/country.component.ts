@@ -67,32 +67,36 @@ export class CountryComponent implements OnInit, OnDestroy {
   // Data Loading
   // ------------------------------------------------------------
 
-  /** Initialise le pays et charge les données */
-  private initCountry(): void {
-    this.isLoading = true;
-    this.error = '';
+   /** Initialise le pays et charge les données */
+    private initCountry(): void {
+      this.isLoading = true;
+      this.error = '';
 
-    this.route.paramMap.pipe(
-      takeUntil(this.destroy$),
-      switchMap(params => {
-        const countryName = params.get('countryName');
-        if (!countryName) return of(undefined); // Param absent
-        return this.olympicService.getCountryByName(countryName).pipe(
-          catchError(err => {
-            this.error = err instanceof Error ? err.message : 'Erreur inconnue';
+      this.route.paramMap.pipe(
+        takeUntil(this.destroy$),
+        switchMap(params => {
+          const countryName = params.get('countryName');
+          if (!countryName) {
+            this.error = 'Aucun pays sélectionné.';
             return of(undefined);
-          })
-        );
-      })
-    ).subscribe(country => {
-      this.isLoading = false;
-      if (!country) {
-        if (!this.error) this.error = 'Aucun pays sélectionné ou données non disponibles.';
-        return;
-      }
-      this.updateMetrics(country);
-    });
-  }
+          }
+          return this.olympicService.getCountryByName(countryName);
+        })
+      ).subscribe({
+        next: country => {
+          this.isLoading = false;
+          if (!country) {
+            if (!this.error) this.error = 'Aucun pays sélectionné ou données non disponibles.';
+            return;
+          }
+          this.updateMetrics(country);
+        },
+        error: err => { // attrape les erreurs provenant du service (HTTP ou métier)
+          this.isLoading = false;
+          this.error = err instanceof Error ? err.message : 'Erreur inconnue';
+        }
+      });
+    }
 
   // ------------------------------------------------------------
   // Data Processing
