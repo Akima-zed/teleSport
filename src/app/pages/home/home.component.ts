@@ -113,8 +113,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     ];
 
     // Chart
-    this.chartLabels = this.countries.map(c => c.country);
-    this.chartData = this.countries.map(c => this.olympicService.getTotalMedals(c.participations));
+    this.chartLabels = [...this.countries.map(c => c.country), 'Pays TEST'];
+    this.chartData = [...this.countries.map(c => this.olympicService.getTotalMedals(c.participations)), 56];
+
   }
 
 
