@@ -38,8 +38,7 @@
   <!-- Graphique -->
   <div class="chart-wrapper">
     <app-chart
-      [chartId]="'countryChart'"
-      [type]="chartType"
+      [type]="'line'"
       [labels]="chartLabels"
       [data]="chartData"
       (chartClick)="onChartClick($event)">

@@ -56,10 +56,10 @@
 <!-- 🔹 État : données prêtes -->
 <section *ngIf="!isLoading && !error" class="chart-section">
   <app-chart
-    [chartId]="'DashboardPieChart'"
-    [type]="'pie'"
-    [labels]="chartLabels"
-    [data]="chartData"
-    (chartClick)="onChartClick($event)">
-  </app-chart>
+
+  [type]="'pie'"
+  [labels]="chartLabels"
+  [data]="chartData"
+  (chartClick)="onChartClick($event)">
+</app-chart>
 </section>

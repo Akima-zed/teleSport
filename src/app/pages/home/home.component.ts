@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Data Processing
   // ------------------------------------------------------------
 
-  // Dans HomeComponent
+
   private updateMetrics(data: Country[]): void {
     this.countries = this.olympicService.sortCountries(data, this.sortBy);
     this.totalJOs = this.olympicService.getTotalJOs(this.countries);

@@ -1,0 +1,11 @@
+.chart-container {
+  width: 100%;
+  max-width: 800px;
+  height: 400px; /* hauteur fixe pour que Chart.js sache où dessiner */
+  margin: 0 auto;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
