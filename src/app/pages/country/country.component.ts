@@ -10,11 +10,10 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil, catchError, of } from 'rxjs';
+import { Subject, of, switchMap, takeUntil, catchError } from 'rxjs';
 
 import { OlympicService } from '../../services/olympic.service';
 import { Country } from '../../models/country';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-country',
@@ -35,8 +34,8 @@ export class CountryComponent implements OnInit, OnDestroy {
 
   /** Graphique Chart.js */
   chartLabels: string[] = [];
-    chartData: number[] = [];
-    chartType: 'pie' | 'line' = 'line';
+  chartData: number[] = [];
+  chartType: 'pie' | 'line' = 'line';
 
   /** États de chargement et d’erreur */
   isLoading = true;
@@ -56,65 +55,43 @@ export class CountryComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------------
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const countryParam = params.get('countryName');
-        if (countryParam) {
-          this.loadCountryData(countryParam);
-        } else {
-          this.error = 'Aucun pays sélectionné.';
-          this.isLoading = false;
-        }
-      });
+    this.initCountry();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-
   }
 
   // ------------------------------------------------------------
   // Data Loading
   // ------------------------------------------------------------
 
-  /** Charge les données d’un pays depuis le service */
-  private loadCountryData(name: string): void {
+  /** Initialise le pays et charge les données */
+  private initCountry(): void {
     this.isLoading = true;
     this.error = '';
 
-    this.olympicService.getCountryByName(name)
-      .pipe(
-        takeUntil(this.destroy$),
-        catchError(err => {
-          this.handleError(err);
-          return of(undefined);
-        })
-      )
-      .subscribe(country => {
-        this.isLoading = false;
-        if (!country) return;
-
-        this.updateMetrics(country);
-
-      });
-  }
-
-  // ------------------------------------------------------------
-  // Error Handling
-  // ------------------------------------------------------------
-
-  /** Gestion centralisée des erreurs */
-  private handleError(err: unknown): void {
-    if (err instanceof HttpErrorResponse) {
-      this.error = err.message || `Erreur HTTP ${err.status}`;
-    } else if (err instanceof Error) {
-      this.error = err.message;
-    } else {
-      this.error = 'Erreur inconnue';
-    }
-    this.isLoading = false;
+    this.route.paramMap.pipe(
+      takeUntil(this.destroy$),
+      switchMap(params => {
+        const countryName = params.get('countryName');
+        if (!countryName) return of(undefined); // Param absent
+        return this.olympicService.getCountryByName(countryName).pipe(
+          catchError(err => {
+            this.error = err instanceof Error ? err.message : 'Erreur inconnue';
+            return of(undefined);
+          })
+        );
+      })
+    ).subscribe(country => {
+      this.isLoading = false;
+      if (!country) {
+        if (!this.error) this.error = 'Aucun pays sélectionné ou données non disponibles.';
+        return;
+      }
+      this.updateMetrics(country);
+    });
   }
 
   // ------------------------------------------------------------
@@ -134,13 +111,12 @@ export class CountryComponent implements OnInit, OnDestroy {
       { label: 'Medals', value: this.totalMedals },
       { label: 'Athletes', value: this.totalAthletes }
     ];
-  // Chart data
-      this.chartLabels = country.participations.map(p => p.year.toString());
-      this.chartData = country.participations.map(p => p.medalsCount);
-      this.chartType = 'line';
+
+    // Chart data
+    this.chartLabels = country.participations.map(p => p.year.toString());
+    this.chartData = country.participations.map(p => p.medalsCount);
+    this.chartType = 'line';
   }
-
-
 
   // ------------------------------------------------------------
   // Interactions
@@ -153,9 +129,10 @@ export class CountryComponent implements OnInit, OnDestroy {
 
   /** Réessayer en cas d’erreur */
   reload(): void {
-    this.ngOnInit();
+    this.initCountry();
   }
-/** clic sur le chart */
+
+  /** Callback du clic sur le chart */
   onChartClick(index: number): void {
     console.log(`Clicked year index: ${index}, year: ${this.chartLabels[index]}`);
   }
