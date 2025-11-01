@@ -113,20 +113,16 @@
   flex-direction: column;
   margin-bottom: 3rem;
   padding: 1rem;
-}
 
-.chart-wrapper {
-  width: 90%;
-  max-width: 800px;
-  height: auto;
+  .chart-wrapper {
+    width: 90%;
+    max-width: 800px;
+    height: auto;
+  }
 }
 
 /* =========================================================
    Responsive Grid System
-   ----------------------------------------------------------
-   Desktop ≥ 1200px : 12 colonnes, éléments côte à côte
-   Tablette 768–1199px : 8 colonnes, graphe pleine largeur
-   Mobile ≤ 767px : 4 colonnes, pile verticale
 ========================================================= */
 
 /* --- Desktop ≥1200px --- */

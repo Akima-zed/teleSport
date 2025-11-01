@@ -8,6 +8,7 @@ import { CountryComponent } from './pages/country/country.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FormsModule } from '@angular/forms';
+import { ChartComponent} from './components/chart/chart.component';
 
 
 /**
@@ -23,7 +24,8 @@ import { FormsModule } from '@angular/forms';
     HomeComponent,
     CountryComponent,
     NotFoundComponent,
-    HeaderComponent
+    HeaderComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,

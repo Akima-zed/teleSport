@@ -44,7 +44,7 @@
 
 <!-- 🔹 État : erreur -->
 <section *ngIf="error" class="error-message" role="alert">
-  <p>❌ Une erreur est survenue lors du chargement des données.</p>
+  <p>❌ {{ error }}</p>
   <button
     class="retry-btn"
     (click)="reload()"
@@ -55,7 +55,11 @@
 
 <!-- 🔹 État : données prêtes -->
 <section *ngIf="!isLoading && !error" class="chart-section">
-  <div class="chart-wrapper">
-    <canvas id="DashboardPieChart"></canvas>
-  </div>
+  <app-chart
+    [chartId]="'DashboardPieChart'"
+    [type]="'pie'"
+    [labels]="chartLabels"
+    [data]="chartData"
+    (chartClick)="onChartClick($event)">
+  </app-chart>
 </section>
