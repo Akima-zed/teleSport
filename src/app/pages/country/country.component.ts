@@ -11,7 +11,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil, catchError, of } from 'rxjs';
-import Chart from 'chart.js/auto';
+
 import { OlympicService } from '../../services/olympic.service';
 import { Country } from '../../models/country';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -34,7 +34,9 @@ export class CountryComponent implements OnInit, OnDestroy {
   totalAthletes = 0;
 
   /** Graphique Chart.js */
-  private lineChart?: Chart<'line', number[], number>;
+  chartLabels: string[] = [];
+    chartData: number[] = [];
+    chartType: 'pie' | 'line' = 'line';
 
   /** États de chargement et d’erreur */
   isLoading = true;
@@ -70,7 +72,7 @@ export class CountryComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.lineChart?.destroy();
+
   }
 
   // ------------------------------------------------------------
@@ -95,7 +97,7 @@ export class CountryComponent implements OnInit, OnDestroy {
         if (!country) return;
 
         this.updateMetrics(country);
-        this.renderChart(country);
+
       });
   }
 
@@ -132,45 +134,13 @@ export class CountryComponent implements OnInit, OnDestroy {
       { label: 'Medals', value: this.totalMedals },
       { label: 'Athletes', value: this.totalAthletes }
     ];
+  // Chart data
+      this.chartLabels = country.participations.map(p => p.year.toString());
+      this.chartData = country.participations.map(p => p.medalsCount);
+      this.chartType = 'line';
   }
 
-  // ------------------------------------------------------------
-  // Chart Rendering
-  // ------------------------------------------------------------
 
-  /** Construit ou met à jour le graphique Chart.js */
-  private renderChart(country: Country): void {
-    const years = country.participations.map(p => p.year);
-    const medals = country.participations.map(p => p.medalsCount);
-
-    setTimeout(() => {
-      this.lineChart?.destroy();
-
-      this.lineChart = new Chart('countryChart', {
-        type: 'line',
-        data: {
-          labels: years,
-          datasets: [{
-            label: 'Nombre de médailles',
-            data: medals,
-            backgroundColor: '#0b868f',
-            borderColor: '#0b868f',
-            tension: 0.3,
-            fill: false
-          }]
-        },
-        options: {
-          responsive: true,
-          aspectRatio: 2.5,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { title: { display: true, text: 'Année' } },
-            y: { title: { display: true, text: 'Médailles' }, beginAtZero: true }
-          }
-        }
-      });
-    });
-  }
 
   // ------------------------------------------------------------
   // Interactions
@@ -184,5 +154,9 @@ export class CountryComponent implements OnInit, OnDestroy {
   /** Réessayer en cas d’erreur */
   reload(): void {
     this.ngOnInit();
+  }
+/** clic sur le chart */
+  onChartClick(index: number): void {
+    console.log(`Clicked year index: ${index}, year: ${this.chartLabels[index]}`);
   }
 }

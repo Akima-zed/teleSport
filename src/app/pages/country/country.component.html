@@ -1,13 +1,3 @@
-<!-- =========================================================
-  CountryComponent Template
-  ----------------------------------------------------------
-  Objectif :
-  - Afficher les données détaillées d’un pays
-  - Graphique des médailles par année
-  - Gestion des états : chargement, erreur, données prêtes
-  - Navigation retour vers le dashboard
-========================================================= -->
-
 <!-- 🔹 Header global réutilisable -->
 <app-header
   [title]="headerTitle"
@@ -47,7 +37,13 @@
 
   <!-- Graphique -->
   <div class="chart-wrapper">
-    <canvas id="countryChart"></canvas>
+    <app-chart
+      [chartId]="'countryChart'"
+      [type]="chartType"
+      [labels]="chartLabels"
+      [data]="chartData"
+      (chartClick)="onChartClick($event)">
+    </app-chart>
     <h2>Medals per Year</h2>
   </div>
 
