@@ -113,8 +113,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     ];
 
     // Chart
-    this.chartLabels = [...this.countries.map(c => c.country), 'Pays TEST'];
-    this.chartData = [...this.countries.map(c => this.olympicService.getTotalMedals(c.participations)), 56];
+    this.chartLabels = this.countries.map(c => c.country);
+    this.chartData = this.countries.map(c => this.olympicService.getTotalMedals(c.participations));
+
+
+    // Chart avec pays test
+    //this.chartLabels = [...this.countries.map(c => c.country), 'Pays TEST'];
+    //this.chartData = [...this.countries.map(c => this.olympicService.getTotalMedals(c.participations)), 56];
 
   }
 
@@ -126,11 +131,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------------
 
   /** Callback du clic sur ChartComponent */
-    onChartClick(index: number): void {
-      const countryName = this.chartLabels[index];
-      const exists = this.countries.some(c => c.country === countryName);
-      this.router.navigate([exists ? 'country' : '**', countryName]);
-    }
+   onChartClick(index: number): void {
+     const countryName = this.chartLabels[index];
+     const exists = this.countries.some(c => c.country === countryName);
+     this.router.navigate([exists ? 'country' : '**', countryName]);
+  }
 
   onSortChange(): void {
     this.loadData();
