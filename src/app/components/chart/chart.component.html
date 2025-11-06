@@ -1,1 +1,22 @@
 <app-chart [chartId]="'DashboardPieChart'" ...></app-chart>
+<div class="chart-container">
+  <canvas
+    #canvas
+    role="img"
+    [attr.aria-label]="chartDescription"
+    tabindex="0">
+  </canvas>
+
+  <!-- Accessible buttons for screen readers / keyboard -->
+  <div *ngFor="let label of labels; let i = index" class="sr-only">
+    <button
+      (click)="onKeyboardSelect(i)"
+      [attr.aria-label]="'Pays ' + label + ', total médailles ' + data[i]"
+      tabindex="0">
+      {{ label }}
+    </button>
+  </div>
+
+  <!-- Text description for screen readers -->
+  <p class="sr-only">{{ chartDescription }}</p>
+</div>

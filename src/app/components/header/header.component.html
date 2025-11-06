@@ -10,8 +10,10 @@
 <div class="header-container">
   <h1 class="header-title">{{ title }}</h1>
 
-  <div class="header-kpis" *ngIf="indicators.length">
-    <div class="kpi" *ngFor="let kpi of indicators">
+  <div class="header-kpis" *ngIf="indicators.length" role="group" aria-label="Statistiques principales">
+    <div class="kpi" *ngFor="let kpi of indicators"
+         tabindex="0"
+         [attr.aria-label]="kpi.label + ': ' + kpi.value">
       <span class="kpi-label">{{ kpi.label }}</span>
       <span class="kpi-value">{{ kpi.value }}</span>
     </div>
