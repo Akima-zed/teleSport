@@ -70,7 +70,7 @@ export class ChartComponent implements OnChanges, OnDestroy, AfterViewInit {
     return {
       label: 'Données',
       data: this.data,
-      backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', 'orange', '#94819d'],
+      backgroundColor: ['#0b868f', '#adc3de', '#7a3c53', '#8f6263', '#695E93', '#94819d'],
       borderColor: '#000',
       borderWidth: 1,
       fill: this.type !== 'line',

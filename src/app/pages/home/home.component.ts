@@ -23,7 +23,7 @@ import { OlympicService } from '../../services/olympic.service';
 export class HomeComponent implements OnInit, OnDestroy {
 
   /** En-tête de la page */
-  titlePage = 'Médailles par pays';
+  titlePage = 'Medals per Country';
   headerIndicators: { label: string; value: number }[] = [];
 
   /** Données principales */
@@ -108,8 +108,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Header
     this.headerIndicators = [
-      { label: 'Pays', value: this.totalCountries },
-      { label: 'JOs', value: this.totalJOs }
+            { label: 'Number of JOs', value: this.totalJOs },
+            { label: 'Number of countries', value: this.totalCountries }
     ];
 
     // Chart

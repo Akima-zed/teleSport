@@ -111,9 +111,9 @@ export class CountryComponent implements OnInit, OnDestroy {
 
     this.headerTitle = this.countryName;
     this.headerIndicators = [
-      { label: 'Entries', value: this.totalParticipations },
-      { label: 'Medals', value: this.totalMedals },
-      { label: 'Athletes', value: this.totalAthletes }
+      { label: 'Number of Entries', value: this.totalParticipations },
+      { label: 'Total number Medals', value: this.totalMedals },
+      { label: 'Total number of Athletes', value: this.totalAthletes }
     ];
 
     // Chart data
